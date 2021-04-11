@@ -45,22 +45,29 @@ GPIO.output(sensor2_shutdown, GPIO.LOW)
 # Keep all low for 500 ms or so to make sure they reset
 time.sleep(0.50)
 
-# Create one object per VL53L0X passing the address to give to
-# each.
-tof = VL53L0X.VL53L0X(i2c_address=0x2B)
-tof1 = VL53L0X.VL53L0X(i2c_address=0x2D)
-tof.open()
-tof1.open()
+# Create one object per VL53L0X
+tof = VL53L0X.VL53L0X(i2c_bus=1,i2c_address=0x29)
+tof1 = VL53L0X.VL53L0X(i2c_bus=1,i2c_address=0x29)
 
-# Set shutdown pin high for the first VL53L0X then 
-# call to start ranging 
+# Set shutdown pin high for the first VL53L0X
 GPIO.output(sensor1_shutdown, GPIO.HIGH)
+time.sleep(1)
+# Set new address for the first VL53L0X
+tof.change_address(0x2B)
+
+# Set shutdown pin high for the second VL53L0X
+GPIO.output(sensor2_shutdown, GPIO.HIGH)
+time.sleep(1)
+# Set new address for the second VL53L0X
+tof.change_address(0x2D)
+
+# start ranging
+tof.open()
 time.sleep(0.50)
 tof.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BETTER)
 
-# Set shutdown pin high for the second VL53L0X then 
-# call to start ranging 
-GPIO.output(sensor2_shutdown, GPIO.HIGH)
+# start ranging
+tof1.open()
 time.sleep(0.50)
 tof1.start_ranging(VL53L0X.Vl53l0xAccuracyMode.BETTER)
 
